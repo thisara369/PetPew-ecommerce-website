@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Orders | PetPew</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-deep:  #2d6a4f;
+      --green-mid:   #40916c;
+      --green-main:  #52b788;
+      --green-light: #b7e4c7;
+      --green-pale:  #d8f3dc;
+      --gold:        #f4a522;
+      --gold-dark:   #d4880a;
+      --gold-pale:   #fff8e5;
+      --cream:       #faf7f2;
+      --charcoal:    #1e2a23;
+      --text-body:   #3d4f44;
+      --text-muted:  #748a7c;
+      --white:       #ffffff;
+      --danger:      #e63946;
+      --shadow-sm:   0 2px 12px rgba(40,100,60,0.08);
+      --shadow-md:   0 8px 32px rgba(40,100,60,0.13);
+      --radius-sm:   8px;
+      --radius-md:   16px;
+      --radius-lg:   28px;
+      --radius-pill: 100px;
+      --transition:  all 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-body);line-height:1.7;min-height:100vh;}
+    a{text-decoration:none;color:inherit;}
+
+    /* Announcement Bar */
+    .announcement-bar{background:var(--green-deep);color:var(--green-pale);text-align:center;padding:9px 16px;font-size:0.82rem;font-weight:500;letter-spacing:0.04em;}
+    .announcement-bar span{color:var(--gold);font-weight:700;}
+
+    /* Navbar */
+    .navbar{background:var(--white);position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--green-pale);box-shadow:var(--shadow-sm);}
+    .navbar-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:72px;gap:16px;}
+    .navbar-brand{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--green-deep);letter-spacing:-0.02em;flex-shrink:0;}
+    .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--green-main),var(--green-deep));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--white);box-shadow:0 4px 12px rgba(82,183,136,0.35);}
+    .brand-dot{color:var(--gold);}
+    .nav-actions{display:flex;align-items:center;gap:8px;}
+    .nav-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--radius-pill);font-size:0.88rem;font-weight:500;transition:var(--transition);cursor:pointer;border:none;font-family:'DM Sans',sans-serif;}
+    .nav-btn-ghost{background:transparent;color:var(--text-body);border:1.5px solid var(--green-light);}
+    .nav-btn-ghost:hover{background:var(--green-pale);color:var(--green-deep);}
+    .nav-btn-primary{background:var(--green-deep);color:var(--white);box-shadow:0 4px 14px rgba(45,106,79,0.28);}
+    .nav-btn-primary:hover{background:var(--green-mid);transform:translateY(-1px);}
+
+    /* Page Header */
+    .page-header{background:linear-gradient(135deg,var(--green-deep) 0%,var(--green-mid) 60%,var(--green-main) 100%);padding:52px 24px 44px;position:relative;overflow:hidden;}
+    .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 85% 50%,rgba(255,255,255,0.05) 0%,transparent 70%),radial-gradient(ellipse 35% 45% at 10% 80%,rgba(244,165,34,0.1) 0%,transparent 60%);pointer-events:none;}
+    .page-header-pattern{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cellipse cx='30' cy='30' rx='8' ry='10'/%3E%3Cellipse cx='17' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='43' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='14' cy='36' rx='4' ry='5'/%3E%3Cellipse cx='46' cy='36' rx='4' ry='5'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+    .page-header-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+    .breadcrumb a{color:rgba(255,255,255,0.7);transition:var(--transition);}
+    .breadcrumb a:hover{color:var(--gold);}
+    .breadcrumb i{font-size:0.6rem;}
+    .page-header-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:var(--white);padding:5px 14px;border-radius:var(--radius-pill);font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;}
+    .page-header-badge i{color:var(--gold);}
+    .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:var(--white);letter-spacing:-0.02em;margin-bottom:6px;}
+    .page-header h1 em{font-style:normal;color:var(--gold);}
+    .page-header p{color:rgba(255,255,255,0.65);font-size:0.92rem;}
+    .header-stats{display:flex;gap:20px;flex-wrap:wrap;}
+    .header-stat{text-align:center;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);border-radius:var(--radius-md);padding:14px 22px;backdrop-filter:blur(8px);}
+    .header-stat strong{display:block;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--white);line-height:1;}
+    .header-stat span{font-size:0.72rem;color:rgba(255,255,255,0.55);}
+
+    /* Main */
+    .main-content{max-width:900px;margin:0 auto;padding:40px 24px 80px;}
+
+    /* Filter / Sort toolbar */
+    .toolbar{background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 20px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1.5px solid transparent;transition:var(--transition);}
+    .toolbar:hover{border-color:var(--green-light);}
+    .filter-chips{display:flex;gap:8px;flex-wrap:wrap;}
+    .filter-chip{padding:6px 14px;border-radius:var(--radius-pill);border:1.5px solid var(--green-light);background:var(--white);font-size:0.8rem;font-weight:600;color:var(--text-muted);cursor:pointer;transition:var(--transition);}
+    .filter-chip:hover,.filter-chip.active{background:var(--green-deep);border-color:var(--green-deep);color:var(--white);}
+    .results-count{font-size:0.82rem;color:var(--text-muted);font-weight:500;white-space:nowrap;}
+    .results-count strong{color:var(--green-deep);font-weight:700;}
+
+    /* Orders list */
+    #ordersList{display:flex;flex-direction:column;gap:20px;}
+
+    /* Skeleton */
+    .skeleton-order{background:var(--white);border-radius:var(--radius-md);padding:24px;box-shadow:var(--shadow-sm);}
+    .skeleton-line{height:14px;border-radius:6px;background:linear-gradient(90deg,var(--green-pale) 25%,#eaf7ed 50%,var(--green-pale) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:10px;}
+    .skeleton-line.short{width:40%;}.skeleton-line.med{width:65%;}
+    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+    /* Order card */
+    .order-card{background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1.5px solid transparent;transition:var(--transition);overflow:hidden;}
+    .order-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--green-light);}
+
+    .order-card-head{
+      padding:18px 22px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      border-bottom:1px solid var(--green-pale);
+      flex-wrap:wrap;gap:10px;
+    }
+
+    .order-id-wrap{display:flex;align-items:center;gap:10px;}
+
+    .order-icon{
+      width:40px;height:40px;
+      background:var(--green-pale);border-radius:var(--radius-sm);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1rem;color:var(--green-deep);flex-shrink:0;
+    }
+
+    .order-id{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--charcoal);}
+    .order-date{font-size:0.75rem;color:var(--text-muted);margin-top:1px;}
+
+    /* Status badges */
+    .status-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 12px;border-radius:var(--radius-pill);
+      font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+      flex-shrink:0;
+    }
+    .status-badge i{font-size:0.65rem;}
+    .status-pending   {background:#fff3cd;color:#856404;border:1.5px solid #ffc107;}
+    .status-processing{background:#cff4fc;color:#055160;border:1.5px solid #0dcaf0;}
+    .status-shipped   {background:#d1ecf1;color:#0c5460;border:1.5px solid #17a2b8;}
+    .status-delivered {background:var(--green-pale);color:var(--green-deep);border:1.5px solid var(--green-light);}
+    .status-cancelled {background:#f8d7da;color:#842029;border:1.5px solid #f5c6cb;}
+    .status-default   {background:#f0f0f0;color:var(--text-muted);border:1.5px solid #ddd;}
+
+    .order-card-body{padding:18px 22px;}
+
+    .order-meta{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:16px;margin-bottom:18px;
+    }
+
+    .meta-item label{
+      font-size:0.7rem;font-weight:700;letter-spacing:0.08em;
+      text-transform:uppercase;color:var(--green-main);display:block;margin-bottom:3px;
+    }
+
+    .meta-item strong{
+      font-family:'Playfair Display',serif;font-size:1rem;
+      font-weight:700;color:var(--charcoal);
+    }
+
+    .meta-item span{font-size:0.82rem;color:var(--text-body);}
+
+    /* Products list */
+    .order-products-label{
+      font-size:0.72rem;font-weight:700;letter-spacing:0.08em;
+      text-transform:uppercase;color:var(--green-main);
+      margin-bottom:10px;
+    }
+
+    .order-products-list{
+      display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;
+    }
+
+    .product-chip{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--cream);border:1.5px solid var(--green-pale);
+      border-radius:var(--radius-pill);
+      padding:5px 12px;font-size:0.78rem;color:var(--text-body);font-weight:500;
+    }
+
+    .product-chip .qty{
+      background:var(--green-pale);color:var(--green-deep);
+      border-radius:50%;width:18px;height:18px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.65rem;font-weight:700;flex-shrink:0;
+    }
+
+    .order-card-foot{
+      padding:14px 22px;
+      background:var(--cream);
+      border-top:1px solid var(--green-pale);
+      display:flex;align-items:center;justify-content:flex-end;gap:10px;
+    }
+
+    .track-btn{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 18px;
+      background:var(--green-deep);color:var(--white);
+      border:none;border-radius:var(--radius-pill);
+      font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;
+      cursor:pointer;transition:var(--transition);
+      box-shadow:0 4px 12px rgba(45,106,79,0.22);
+    }
+    .track-btn:hover{background:var(--green-mid);transform:translateY(-1px);box-shadow:0 6px 16px rgba(45,106,79,0.28);}
+
+    /* Empty / Error state */
+    .empty-state,.error-state{
+      text-align:center;padding:80px 24px;
+      background:var(--white);border-radius:var(--radius-md);
+      box-shadow:var(--shadow-sm);
+    }
+    .state-icon{font-size:4rem;margin-bottom:16px;opacity:0.4;}
+    .empty-state h3,.error-state h3{
+      font-family:'Playfair Display',serif;font-size:1.4rem;
+      color:var(--charcoal);margin-bottom:8px;
+    }
+    .empty-state p,.error-state p{font-size:0.9rem;color:var(--text-muted);margin-bottom:20px;}
+    .btn-shop{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:10px 24px;background:var(--green-deep);color:var(--white);
+      border-radius:var(--radius-pill);font-weight:600;font-size:0.88rem;
+      transition:var(--transition);box-shadow:0 4px 14px rgba(45,106,79,0.28);
+    }
+    .btn-shop:hover{background:var(--green-mid);transform:translateY(-2px);}
+
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    /* Responsive */
+    @media(max-width:768px){
+      .navbar-inner{height:60px;padding:0 16px;}
+      .navbar-brand{font-size:1.5rem;}
+      .nav-btn span{display:none;}
+      .header-stats{display:none;}
+      .order-meta{grid-template-columns:repeat(2,1fr);}
+      .page-header{padding:36px 16px 28px;}
+    }
+    @media(max-width:480px){
+      .order-meta{grid-template-columns:1fr;}
+      .toolbar{flex-direction:column;align-items:stretch;}
+      .order-card-head{flex-direction:column;align-items:flex-start;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    🐾 Free island-wide delivery on orders over <span>Rs.5,000</span> &nbsp;|&nbsp; Use code <span>PETPEW10</span> for 10% off
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="homepage.html" class="navbar-brand">
+        <div class="logo-icon">🐾</div>
+        Pet<span class="brand-dot">Pew</span>
+      </a>
+      <div class="nav-actions">
+        <a href="shopnow.html" class="nav-btn nav-btn-ghost">
+          <i class="fas fa-store"></i>
+          <span>Shop</span>
+        </a>
+        <a href="account.php" class="nav-btn nav-btn-ghost">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="cart.html" class="nav-btn nav-btn-primary">
+          <i class="fas fa-shopping-bag"></i>
+          <span>Cart</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div>
+        <div class="breadcrumb">
+          <a href="homepage.html">Home</a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="account.php">Account</a>
+          <i class="fas fa-chevron-right"></i>
+          <span>My Orders</span>
+        </div>
+        <div class="page-header-badge">
+          <i class="fas fa-box"></i>
+          Order History
+        </div>
+        <h1>My <em>Orders</em></h1>
+        <p>Track, review and manage all your PetPew purchases.</p>
+      </div>
+      <div class="header-stats">
+        <div class="header-stat">
+          <strong id="totalOrdersStat">—</strong>
+          <span>Total Orders</span>
+        </div>
+        <div class="header-stat">
+          <strong id="totalSpentStat">—</strong>
+          <span>Total Spent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Toolbar -->
+    <div class="toolbar reveal">
+      <div class="filter-chips" id="filterChips">
+        <button class="filter-chip active" data-filter="all">All Orders</button>
+        <button class="filter-chip" data-filter="pending">Pending</button>
+        <button class="filter-chip" data-filter="processing">Processing</button>
+        <button class="filter-chip" data-filter="shipped">Shipped</button>
+        <button class="filter-chip" data-filter="delivered">Delivered</button>
+        <button class="filter-chip" data-filter="cancelled">Cancelled</button>
+      </div>
+      <p class="results-count">Showing <strong id="orderCount">—</strong> orders</p>
+    </div>
+
+    <div id="ordersList"></div>
+
+  </main>
+
+  <script>
+    let allOrders = [];
+    let activeFilter = 'all';
+
+    // ── Status config ─────────────────────────────────────────
+    const statusConfig = {
+      'pending':    { cls: 'status-pending',    icon: 'fas fa-clock',            label: 'Pending' },
+      'processing': { cls: 'status-processing', icon: 'fas fa-cog',              label: 'Processing' },
+      'shipped':    { cls: 'status-shipped',    icon: 'fas fa-shipping-fast',    label: 'Shipped' },
+      'delivered':  { cls: 'status-delivered',  icon: 'fas fa-check-circle',     label: 'Delivered' },
+      'cancelled':  { cls: 'status-cancelled',  icon: 'fas fa-times-circle',     label: 'Cancelled' },
+    };
+
+    function getStatusConfig(status) {
+      const key = (status || '').toLowerCase();
+      return statusConfig[key] || { cls: 'status-default', icon: 'fas fa-circle', label: status || 'Unknown' };
+    }
+
+    // ── Skeletons ─────────────────────────────────────────────
+    function renderSkeletons() {
+      const list = document.getElementById('ordersList');
+      list.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        list.innerHTML += `
+          <div class="skeleton-order">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line med"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+          </div>`;
+      }
+    }
+
+    renderSkeletons();
+
+    // ── Render orders ─────────────────────────────────────────
+    function renderOrders() {
+      const list = document.getElementById('ordersList');
+      const filtered = activeFilter === 'all'
+        ? allOrders
+        : allOrders.filter(o => (o.status || '').toLowerCase() === activeFilter);
+
+      document.getElementById('orderCount').textContent = filtered.length;
+      list.innerHTML = '';
+
+      if (!filtered.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="state-icon">📦</div>
+            <h3>${activeFilter === 'all' ? "You haven't placed any orders yet" : `No ${activeFilter} orders`}</h3>
+            <p>${activeFilter === 'all' ? 'Start shopping and your orders will appear here.' : 'Try a different filter above.'}</p>
+            ${activeFilter === 'all' ? `<a href="shopnow.html" class="btn-shop"><i class="fas fa-store"></i> Start Shopping</a>` : ''}
+          </div>`;
+        return;
+      }
+
+      filtered.forEach((order, i) => {
+        const sc    = getStatusConfig(order.status);
+        const items = (order.items || []);
+        const date  = new Date(order.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+        const time  = new Date(order.created_at).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+
+        const productChips = items.length
+          ? items.map(i => `
+              <div class="product-chip">
+                <span class="qty">${i.quantity}</span>
+                ${i.name}
+              </div>`).join('')
+          : '<span style="font-size:0.82rem;color:var(--text-muted)">—</span>';
+
+        const card = document.createElement('div');
+        card.className = 'order-card reveal';
+        card.dataset.status = (order.status || '').toLowerCase();
+
+        card.innerHTML = `
+          <div class="order-card-head">
+            <div class="order-id-wrap">
+              <div class="order-icon"><i class="fas fa-box-open"></i></div>
+              <div>
+                <div class="order-id">Order #${order.id}</div>
+                <div class="order-date">${date} at ${time}</div>
+              </div>
+            </div>
+            <span class="status-badge ${sc.cls}">
+              <i class="${sc.icon}"></i> ${sc.label}
+            </span>
+          </div>
+
+          <div class="order-card-body">
+            <div class="order-meta">
+              <div class="meta-item">
+                <label>Order Total</label>
+                <strong>Rs. ${parseFloat(order.total_amount).toFixed(2)}</strong>
+              </div>
+              <div class="meta-item">
+                <label>Items</label>
+                <span>${items.length} item${items.length !== 1 ? 's' : ''}</span>
+              </div>
+              <div class="meta-item">
+                <label>Payment</label>
+                <span>${order.payment_method || 'Online'}</span>
+              </div>
+            </div>
+
+            <div class="order-products-label">Products</div>
+            <div class="order-products-list">${productChips}</div>
+          </div>
+
+          ${order.tracking_number ? `
+          <div class="order-card-foot">
+            <a href="order_tracking.html?id=${order.id}" class="track-btn">
+              <i class="fas fa-map-marker-alt"></i> Track Order
+            </a>
+          </div>` : ''}
+        `;
+
+        list.appendChild(card);
+
+        // Staggered reveal
+        setTimeout(() => card.classList.add('visible'), i * 80);
+      });
+    }
+
+    // ── Fetch orders ──────────────────────────────────────────
+    fetch('api/get_orders.php')
+      .then(res => {
+        if (res.headers.get('content-type')?.includes('application/json')) return res.json();
+        return res.text().then(t => { throw new Error(t); });
+      })
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+        allOrders = data || [];
+
+        // Header stats
+        const totalSpent = allOrders.reduce((s, o) => s + parseFloat(o.total_amount || 0), 0);
+        document.getElementById('totalOrdersStat').textContent = allOrders.length;
+        document.getElementById('totalSpentStat').textContent  = 'Rs.' + totalSpent.toFixed(0);
+
+        renderOrders();
+      })
+      .catch(err => {
+        document.getElementById('ordersList').innerHTML = `
+          <div class="error-state">
+            <div class="state-icon">⚠️</div>
+            <h3>Could not load orders</h3>
+            <p>${err.message || 'Please refresh the page or try again later.'}</p>
+            <a href="account.php" class="btn-shop" style="background:var(--danger)">
+              <i class="fas fa-arrow-left"></i> Back to Account
+            </a>
+          </div>`;
+        document.getElementById('orderCount').textContent = 0;
+      });
+
+    // ── Filter chips ──────────────────────────────────────────
+    document.getElementById('filterChips').addEventListener('click', e => {
+      const chip = e.target.closest('.filter-chip');
+      if (!chip) return;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter;
+      renderOrders();
+    });
+
+    // ── Scroll reveal ─────────────────────────────────────────
+    new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 }).observe(document.querySelector('.toolbar'));
+  </script>
+
+</body>
+</html>

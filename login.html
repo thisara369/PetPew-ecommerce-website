@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PetPew – Login / Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-deep:  #2d6a4f;
+      --green-mid:   #40916c;
+      --green-main:  #52b788;
+      --green-light: #b7e4c7;
+      --green-pale:  #d8f3dc;
+      --gold:        #f4a522;
+      --gold-dark:   #d4880a;
+      --cream:       #faf7f2;
+      --charcoal:    #1e2a23;
+      --text-body:   #3d4f44;
+      --text-muted:  #748a7c;
+      --white:       #ffffff;
+      --danger:      #e63946;
+      --shadow-sm:   0 2px 12px rgba(40,100,60,0.08);
+      --shadow-md:   0 8px 32px rgba(40,100,60,0.18);
+      --shadow-lg:   0 20px 60px rgba(40,100,60,0.22);
+      --radius-sm:   8px;
+      --radius-md:   16px;
+      --radius-lg:   28px;
+      --radius-pill: 100px;
+      --transition:  all 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 50%, var(--green-main) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background decorations */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+    .bg-blob-1 {
+      width: 500px; height: 500px;
+      background: rgba(255,255,255,0.06);
+      top: -150px; right: -100px;
+      animation: floatBlob 20s ease-in-out infinite;
+    }
+    .bg-blob-2 {
+      width: 350px; height: 350px;
+      background: rgba(244,165,34,0.1);
+      bottom: -100px; left: -80px;
+      animation: floatBlob 25s ease-in-out infinite reverse;
+    }
+    .bg-pattern {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cellipse cx='30' cy='30' rx='8' ry='10'/%3E%3Cellipse cx='17' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='43' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='14' cy='36' rx='4' ry='5'/%3E%3Cellipse cx='46' cy='36' rx='4' ry='5'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    @keyframes floatBlob {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(40px,-30px) scale(1.08); }
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: relative; z-index: 10;
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .navbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem; font-weight: 900;
+      color: var(--white); letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-dot { color: var(--gold); }
+
+    .navbar-back {
+      display: inline-flex; align-items: center; gap: 7px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.87rem; font-weight: 500;
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      transition: var(--transition);
+    }
+    .navbar-back:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ── Main layout ── */
+    .main-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 60px;
+      position: relative; z-index: 2;
+    }
+
+    /* ── Card container (flip) ── */
+    .flip-container { perspective: 1200px; }
+
+    .flip-card {
+      width: 420px;
+      height: 500px;
+      position: relative;
+      transition: transform 0.75s cubic-bezier(0.4,0,0.2,1);
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.flipped {
+      transform: rotateY(180deg);
+      height: 580px;
+    }
+
+    .flip-side {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 36px 32px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow-y: auto;
+    }
+
+    .flip-side.front { /* default — faces forward */ }
+    .flip-side.back  { transform: rotateY(180deg); }
+
+    /* ── Card header ── */
+    .card-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      background: var(--green-pale);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin: 0 auto 12px;
+      border: 2px solid var(--green-light);
+    }
+
+    .card-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem; font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+
+    .card-header h2 em { font-style: normal; color: var(--green-deep); }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Form fields ── */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-body);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%; transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      pointer-events: none;
+      transition: color 0.25s;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border: 1.5px solid var(--green-light);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--charcoal);
+      background: var(--cream);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--green-main);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
+    }
+
+    .input-wrap input:focus + i,
+    .input-wrap input:focus ~ i {
+      color: var(--green-main);
+    }
+
+    .input-wrap i.icon-left { left: 14px; }
+
+    /* Password toggle */
+    .toggle-pass {
+      position: absolute;
+      right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--text-muted); font-size: 0.88rem;
+      cursor: pointer; padding: 4px;
+      transition: color 0.25s;
+    }
+    .toggle-pass:hover { color: var(--green-deep); }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 6px 20px rgba(45,106,79,0.3);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-main));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(45,106,79,0.35);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 12px 0 10px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--green-light);
+    }
+    .divider span {
+      font-size: 0.75rem; color: var(--text-muted); font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── Switch link ── */
+    .switch-text {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .switch-text button {
+      background: none; border: none;
+      color: var(--green-deep);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: underline;
+      transition: color 0.25s;
+    }
+    .switch-text button:hover { color: var(--green-mid); }
+
+    /* ── Error / success messages ── */
+    .alert {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.83rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .alert.show { display: flex; }
+    .alert-error   { background: #fef2f2; color: #c0392b; border: 1.5px solid #fca5a5; }
+    .alert-success { background: var(--green-pale); color: var(--green-deep); border: 1.5px solid var(--green-light); }
+
+    /* ── Footer ── */
+    .auth-footer {
+      position: relative; z-index: 2;
+      text-align: center;
+      padding: 16px 24px 28px;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .auth-footer a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .auth-footer a:hover { color: var(--gold); }
+
+    /* ── Responsive ── */
+    @media(max-width:480px) {
+      .flip-card { width: calc(100vw - 32px); }
+      .flip-side { padding: 28px 20px 24px; }
+      .navbar-brand { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+  <div class="bg-pattern"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="homepage.html" class="navbar-brand">
+      <div class="logo-icon">🐾</div>
+      Pet<span class="brand-dot">Pew</span>
+    </a>
+    <a href="homepage.html" class="navbar-back">
+      <i class="fas fa-arrow-left"></i> Back to Shop
+    </a>
+  </nav>
+
+  <!-- Main -->
+  <div class="main-wrap">
+    <div class="flip-container">
+      <div class="flip-card" id="flipCard">
+
+        <!-- ══════════ LOGIN SIDE ══════════ -->
+        <div class="flip-side front">
+          <div class="card-header">
+            <div class="card-icon">🔑</div>
+            <h2>Welcome <em>Back</em></h2>
+            <p>Sign in to your PetPew account</p>
+          </div>
+
+          <div class="alert alert-error" id="loginError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="loginErrorMsg">Invalid username or password.</span>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <div class="form-group">
+              <label for="loginUser">Username</label>
+              <div class="input-wrap">
+                <i class="fas fa-user icon-left"></i>
+                <input type="text" id="loginUser" name="username" placeholder="Enter your username" required autocomplete="username">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginPass">Password</label>
+              <div class="input-wrap">
+                <i class="fas fa-lock icon-left"></i>
+                <input type="password" id="loginPass" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                <button type="button" class="toggle-pass" onclick="togglePass('loginPass', this)" aria-label="Show password">
+                  <i class="far fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="loginBtn">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+          </form>
+
+          <div class="divider"><span>New to PetPew?</span></div>
+
+          <div class="switch-text">
+            Don't have an account?
+            <button onclick="flipCard()">Create one free</button>
+          </div>
+        </div>
+
+        <!-- ══════════ REGISTER SIDE ══════════ -->
+        <div class="flip-side back">
+          <div class="card-header">
+            <div class="card-icon">🐾</div>
+            <h2>Join <em>PetPew</em></h2>
+            <p>Create your free account today</p>
+          </div>
+
+          <div class="alert alert-error" id="regError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="regErrorMsg">Something went wrong.</span>
+          </div>
+
+          <div class="alert alert-success" id="regSuccess">
+            <i class="fas fa-check-circle"></i>
+            <span>Registered! Please sign in.</span>
+          </div>
+
+          <form id="regForm" novalidate>
+            <div class="form-group">
+              <label for="regUser">Username</label>
+              <div class="input-wrap">
+                <i class="fas fa-user icon-left"></i>
+                <input type="text" id="regUser" name="username" placeholder="Choose a username" required autocomplete="off">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regEmail">Email</label>
+              <div class="input-wrap">
+                <i class="fas fa-envelope icon-left"></i>
+                <input type="email" id="regEmail" name="email" placeholder="your@email.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regPass">Password</label>
+              <div class="input-wrap">
+                <i class="fas fa-lock icon-left"></i>
+                <input type="password" id="regPass" name="password" placeholder="Min. 6 characters" required autocomplete="new-password">
+                <button type="button" class="toggle-pass" onclick="togglePass('regPass', this)" aria-label="Show password">
+                  <i class="far fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="regBtn">
+              <i class="fas fa-user-plus"></i> Create Account
+            </button>
+          </form>
+
+          <div class="divider"><span>Already registered?</span></div>
+
+          <div class="switch-text">
+            Have an account?
+            <button onclick="flipCard()">Sign in here</button>
+          </div>
+        </div>
+
+      </div><!-- /.flip-card -->
+    </div><!-- /.flip-container -->
+  </div><!-- /.main-wrap -->
+
+  <!-- Footer -->
+  <div class="auth-footer">
+    &copy; 2025 PetPew / MyPets.lk Pvt Ltd &nbsp;·&nbsp;
+    <a href="homepage.html">Home</a> &nbsp;·&nbsp;
+    <a href="Contact.html">Contact</a>
+  </div>
+
+  <script>
+    // ── Flip card ────────────────────────────────────────────
+    function flipCard() {
+      const card = document.getElementById('flipCard');
+      const isFlipping = !card.classList.contains('flipped');
+      card.classList.toggle('flipped');
+      // Adjust height for register (taller) vs login
+      card.style.height = isFlipping ? '580px' : '500px';
+      // hide alerts on flip
+      document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
+    }
+
+    // ── Show/hide password ───────────────────────────────────
+    function togglePass(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon  = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'far fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'far fa-eye';
+      }
+    }
+
+    // ── Show alert ───────────────────────────────────────────
+    function showAlert(id, msg) {
+      const el = document.getElementById(id);
+      if (msg) document.getElementById(id + 'Msg').textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 5000);
+    }
+
+    function hideAlert(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // ── LOGIN ────────────────────────────────────────────────
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      hideAlert('loginError');
+
+      const form = e.target;
+      const btn  = document.getElementById('loginBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
+
+      try {
+        const res = await fetch('api/login.php', {
+          method: 'POST',
+          body: new FormData(form)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) throw new Error(result.error || 'Login failed');
+
+        // Success — redirect
+        window.location.href = result.role === 'admin' ? 'admin.html' : 'account.php';
+
+      } catch (err) {
+        showAlert('loginError', err.message || 'Invalid username or password.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+      }
+    });
+
+    // ── REGISTER ─────────────────────────────────────────────
+    document.getElementById('regForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      hideAlert('regError');
+      hideAlert('regSuccess');
+
+      const form = e.target;
+      const btn  = document.getElementById('regBtn');
+
+      // Client-side validation
+      const username = form.username.value.trim();
+      const email    = form.email.value.trim();
+      const password = form.password.value;
+
+      if (!username || !email || !password) {
+        showAlert('regError', 'Please fill in all fields.');
+        return;
+      }
+      if (password.length < 6) {
+        showAlert('regError', 'Password must be at least 6 characters.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account…';
+
+      try {
+        const res = await fetch('api/register.php', {
+          method: 'POST',
+          body: new FormData(form)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) throw new Error(result.error || 'Registration failed.');
+
+        // Success
+        form.reset();
+        document.getElementById('regSuccess').classList.add('show');
+        setTimeout(() => {
+          document.getElementById('regSuccess').classList.remove('show');
+          flipCard(); // flip back to login
+        }, 2000);
+
+      } catch (err) {
+        showAlert('regError', err.message || 'Registration failed. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

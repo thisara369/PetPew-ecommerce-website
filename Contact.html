@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us | PetPew</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-deep:  #2d6a4f;
+      --green-mid:   #40916c;
+      --green-main:  #52b788;
+      --green-light: #b7e4c7;
+      --green-pale:  #d8f3dc;
+      --gold:        #f4a522;
+      --gold-dark:   #d4880a;
+      --cream:       #faf7f2;
+      --charcoal:    #1e2a23;
+      --text-body:   #3d4f44;
+      --text-muted:  #748a7c;
+      --white:       #ffffff;
+      --danger:      #e63946;
+      --shadow-sm:   0 2px 12px rgba(40,100,60,0.08);
+      --shadow-md:   0 8px 32px rgba(40,100,60,0.13);
+      --shadow-lg:   0 20px 60px rgba(40,100,60,0.22);
+      --radius-sm:   8px;
+      --radius-md:   16px;
+      --radius-lg:   28px;
+      --radius-pill: 100px;
+      --transition:  all 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 50%, var(--green-main) 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Background decorations */
+    .bg-blob { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+    .bg-blob-1 { width: 500px; height: 500px; background: rgba(255,255,255,0.05); top: -150px; right: -100px; animation: floatBlob 20s ease-in-out infinite; }
+    .bg-blob-2 { width: 380px; height: 380px; background: rgba(244,165,34,0.09); bottom: -80px; left: -80px; animation: floatBlob 26s ease-in-out infinite reverse; }
+    .bg-pattern { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cellipse cx='30' cy='30' rx='8' ry='10'/%3E%3Cellipse cx='17' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='43' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='14' cy='36' rx='4' ry='5'/%3E%3Cellipse cx='46' cy='36' rx='4' ry='5'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    @keyframes floatBlob { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,-30px) scale(1.08);} }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: relative; z-index: 10;
+      height: 70px; padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+
+    .navbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem; font-weight: 900;
+      color: var(--white); letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.14);
+      border: 1.5px solid rgba(255,255,255,0.22);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .brand-dot { color: var(--gold); }
+
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+
+    .nav-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.72);
+      font-size: 0.87rem; font-weight: 500;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid transparent;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* ── Main wrap ── */
+    .main-wrap {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 24px 60px;
+      position: relative; z-index: 2;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    /* ══════════════════════════════
+       CONTACT FORM PANEL
+    ══════════════════════════════ */
+    .contact-panel {
+      width: 100%; max-width: 480px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: slideUp 0.55s ease both;
+    }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:translateY(0);} }
+
+    /* Panel header */
+    .panel-header {
+      padding: 26px 30px 22px;
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      display: flex; align-items: center; gap: 14px;
+      position: relative; overflow: hidden;
+    }
+
+    .panel-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='6'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .header-icon {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+
+    .panel-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--white); margin-bottom: 3px;
+    }
+
+    .panel-header p { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+
+    /* Panel body */
+    .panel-body { padding: 28px 30px 30px; }
+
+    /* Form groups */
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text-body); margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap i {
+      position: absolute; left: 13px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted); font-size: 0.85rem;
+      pointer-events: none; transition: color 0.25s;
+    }
+
+    .input-wrap.textarea-wrap i { top: 16px; transform: none; }
+
+    .input-wrap input,
+    .input-wrap textarea {
+      width: 100%;
+      padding: 11px 14px 11px 36px;
+      border: 1.5px solid var(--green-light);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; color: var(--charcoal);
+      background: var(--cream); outline: none;
+      transition: var(--transition);
+    }
+
+    .input-wrap textarea {
+      min-height: 110px; resize: vertical;
+      padding-top: 12px; line-height: 1.6;
+    }
+
+    .input-wrap input:focus,
+    .input-wrap textarea:focus {
+      border-color: var(--green-main);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
+    }
+
+    .input-wrap input:focus ~ i,
+    .input-wrap textarea:focus ~ i,
+    .input-wrap input:focus + i,
+    .input-wrap textarea:focus + i { color: var(--green-main); }
+
+    /* Subject select */
+    .input-wrap select {
+      width: 100%;
+      padding: 11px 14px 11px 36px;
+      border: 1.5px solid var(--green-light);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; color: var(--charcoal);
+      background: var(--cream); outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23748a7c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: var(--transition);
+    }
+
+    .input-wrap select:focus {
+      border-color: var(--green-main);
+      background-color: var(--white);
+      box-shadow: 0 0 0 3px rgba(82,183,136,0.15);
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      color: var(--white); border: none;
+      border-radius: var(--radius-pill);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: var(--transition);
+      box-shadow: 0 6px 20px rgba(45,106,79,0.3);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 6px;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-main));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(45,106,79,0.35);
+    }
+
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Alert messages */
+    .alert {
+      padding: 10px 14px; border-radius: var(--radius-sm);
+      font-size: 0.83rem; font-weight: 500;
+      margin-top: 14px;
+      display: none; align-items: center; gap: 8px;
+    }
+
+    .alert.show { display: flex; }
+    .alert-success { background: var(--green-pale); color: var(--green-deep); border: 1.5px solid var(--green-light); }
+    .alert-error   { background: #fef2f2; color: #c0392b; border: 1.5px solid #fca5a5; }
+
+    /* ══════════════════════════════
+       INFO SIDEBAR
+    ══════════════════════════════ */
+    .info-panel {
+      width: 100%; max-width: 300px;
+      display: flex; flex-direction: column; gap: 16px;
+      animation: slideUp 0.6s 0.1s ease both;
+    }
+
+    .info-card {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      transition: var(--transition);
+    }
+
+    .info-card:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.25);
+      transform: translateY(-3px);
+    }
+
+    .info-card-icon {
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.15);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; margin-bottom: 14px;
+      color: var(--white);
+    }
+
+    .info-card h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--white); margin-bottom: 6px;
+    }
+
+    .info-card p {
+      font-size: 0.82rem; color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+    }
+
+    .info-card a {
+      color: var(--gold);
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .info-card a:hover { color: var(--gold-dark); }
+
+    /* Social links in info panel */
+    .social-row {
+      display: flex; gap: 10px; margin-top: 4px;
+    }
+
+    .social-btn {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: rgba(255,255,255,0.75);
+      transition: var(--transition);
+    }
+
+    .social-btn:hover {
+      background: var(--green-main);
+      border-color: var(--green-main);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* Hours table */
+    .hours-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; color: rgba(255,255,255,0.65);
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+    /* ── Footer ── */
+    .page-footer {
+      position: relative; z-index: 2;
+      text-align: center;
+      padding: 0 24px 28px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.38);
+    }
+
+    .page-footer a { color: rgba(255,255,255,0.55); transition: color 0.2s; }
+    .page-footer a:hover { color: var(--gold); }
+
+    /* ── Responsive ── */
+    @media(max-width: 840px) {
+      .info-panel { max-width: 480px; flex-direction: row; flex-wrap: wrap; }
+      .info-card  { flex: 1; min-width: 200px; }
+    }
+
+    @media(max-width: 600px) {
+      .navbar { height: 60px; padding: 0 16px; }
+      .navbar-brand { font-size: 1.4rem; }
+      .nav-links .nav-link span { display: none; }
+      .contact-panel { max-width: 100%; }
+      .panel-body { padding: 22px 20px 24px; }
+      .info-panel { max-width: 100%; flex-direction: column; }
+      .info-card { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+  <div class="bg-pattern"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="homepage.html" class="navbar-brand">
+      <div class="logo-icon">🐾</div>
+      Pet<span class="brand-dot">Pew</span>
+    </a>
+    <div class="nav-links">
+      <a href="homepage.html" class="nav-link">
+        <i class="fas fa-home"></i><span>Home</span>
+      </a>
+      <a href="shopnow.html" class="nav-link">
+        <i class="fas fa-store"></i><span>Shop</span>
+      </a>
+      <a href="account.php" class="nav-link">
+        <i class="fas fa-user"></i><span>Account</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main-wrap">
+
+    <!-- ── Contact Form ── -->
+    <div class="contact-panel">
+      <div class="panel-header">
+        <div class="header-icon">✉️</div>
+        <div>
+          <h2>Get in Touch</h2>
+          <p>We'd love to hear from you — we'll reply within 24 hours</p>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <form id="contactForm" action="send.php" method="POST" novalidate>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <div class="input-wrap">
+              <input type="text" id="name" name="name" placeholder="Your full name" required autocomplete="name">
+              <i class="fas fa-user"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrap">
+              <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
+              <i class="fas fa-envelope"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <div class="input-wrap">
+              <i class="fas fa-tag" style="z-index:1;"></i>
+              <select id="subject" name="subject">
+                <option value="">— Select a topic —</option>
+                <option value="Order Enquiry">Order Enquiry</option>
+                <option value="Product Question">Product Question</option>
+                <option value="Delivery Issue">Delivery Issue</option>
+                <option value="Returns & Refunds">Returns & Refunds</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <div class="input-wrap textarea-wrap">
+              <textarea id="message" name="message" placeholder="Tell us how we can help…" required></textarea>
+              <i class="fas fa-comment-dots"></i>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+
+        </form>
+
+        <div class="alert alert-success" id="successAlert">
+          <i class="fas fa-check-circle"></i>
+          <span>Message sent! We'll get back to you within 24 hours. 🐾</span>
+        </div>
+        <div class="alert alert-error" id="errorAlert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="errorText">Something went wrong. Please try again.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Info Sidebar ── -->
+    <div class="info-panel">
+
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <h4>Visit Us</h4>
+        <p>MyPets.lk Pvt Ltd<br>Kalalgoda, Pannipitiya<br>J0102, Sri Lanka</p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fas fa-envelope"></i></div>
+        <h4>Email Us</h4>
+        <p>
+          <a href="mailto:support@petpew.lk">support@petpew.lk</a><br>
+          <span style="font-size:0.75rem;margin-top:4px;display:block;">We reply within 24 hours</span>
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fas fa-clock"></i></div>
+        <h4>Business Hours</h4>
+        <div class="hours-row"><strong>Mon – Fri</strong><span>9:00 AM – 6:00 PM</span></div>
+        <div class="hours-row"><strong>Saturday</strong><span>10:00 AM – 4:00 PM</span></div>
+        <div class="hours-row"><strong>Sunday</strong><span>Closed</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fas fa-share-alt"></i></div>
+        <h4>Follow Us</h4>
+        <p style="margin-bottom:12px;">Stay updated on new arrivals and offers</p>
+        <div class="social-row">
+          <a href="https://www.facebook.com/" target="_blank" class="social-btn" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" class="social-btn" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" class="social-btn" aria-label="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /.info-panel -->
+
+  </div><!-- /.main-wrap -->
+
+  <!-- Footer -->
+  <div class="page-footer">
+    © 2025 PetPew / MyPets.lk Pvt Ltd &nbsp;·&nbsp;
+    <a href="homepage.html">Home</a> &nbsp;·&nbsp;
+    <a href="shopnow.html">Shop</a> &nbsp;·&nbsp;
+    <a href="mailto:support@petpew.lk">support@petpew.lk</a>
+  </div>
+
+  <script>
+    const form       = document.getElementById('contactForm');
+    const successEl  = document.getElementById('successAlert');
+    const errorEl    = document.getElementById('errorAlert');
+    const errorText  = document.getElementById('errorText');
+    const submitBtn  = document.getElementById('submitBtn');
+
+    function hideAlerts() {
+      successEl.classList.remove('show');
+      errorEl.classList.remove('show');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlerts();
+
+      // Basic client-side validation
+      const name    = form.name.value.trim();
+      const email   = form.email.value.trim();
+      const message = form.message.value.trim();
+
+      if (!name) { showError('Please enter your full name.'); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
+      if (!message) { showError('Please write a message before sending.'); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+
+      try {
+        const res  = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+        const text = await res.text();
+
+        if (res.ok) {
+          successEl.classList.add('show');
+          form.reset();
+          // Auto-hide after 6s
+          setTimeout(() => successEl.classList.remove('show'), 6000);
+        } else {
+          showError(text || 'Failed to send. Please try again.');
+        }
+
+      } catch {
+        showError('Network error. Please check your connection and try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+      }
+    });
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorEl.classList.add('show');
+      setTimeout(() => errorEl.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>
