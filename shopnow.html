@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetPew | Shop by Category</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================
+           CSS VARIABLES
+        =========================== */
+        :root {
+            --green-deep:    #2d6a4f;
+            --green-mid:     #40916c;
+            --green-main:    #52b788;
+            --green-light:   #b7e4c7;
+            --green-pale:    #d8f3dc;
+            --gold:          #f4a522;
+            --gold-dark:     #d4880a;
+            --gold-pale:     #fff8e5;
+            --cream:         #faf7f2;
+            --charcoal:      #1e2a23;
+            --text-body:     #3d4f44;
+            --text-muted:    #748a7c;
+            --white:         #ffffff;
+            --shadow-sm:     0 2px 12px rgba(40,100,60,0.08);
+            --shadow-md:     0 8px 32px rgba(40,100,60,0.13);
+            --shadow-lg:     0 20px 60px rgba(40,100,60,0.18);
+            --radius-sm:     8px;
+            --radius-md:     16px;
+            --radius-lg:     28px;
+            --radius-pill:   100px;
+            --transition:    all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===========================
+           RESET & BASE
+        =========================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-body);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* ===========================
+           ANNOUNCEMENT BAR
+        =========================== */
+        .announcement-bar {
+            background: var(--green-deep);
+            color: var(--green-pale);
+            text-align: center;
+            padding: 9px 16px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+
+        .announcement-bar span { color: var(--gold); font-weight: 700; }
+
+        /* ===========================
+           NAVBAR
+        =========================== */
+        .navbar {
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--green-pale);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 900;
+            color: var(--green-deep);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--green-main), var(--green-deep));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(82,183,136,0.35);
+            flex-shrink: 0;
+        }
+
+        .brand-dot { color: var(--gold); }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a {
+            color: var(--text-body);
+            font-weight: 500;
+            font-size: 0.92rem;
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            background: var(--green-pale);
+            color: var(--green-deep);
+        }
+
+        .nav-cart {
+            background: var(--green-deep) !important;
+            color: var(--white) !important;
+            padding: 8px 18px !important;
+            display: flex !important;
+            align-items: center;
+            gap: 7px;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 14px rgba(45,106,79,0.3);
+        }
+
+        .nav-cart:hover {
+            background: var(--green-mid) !important;
+            color: var(--white) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(45,106,79,0.35);
+        }
+
+        .nav-signout {
+            border: 1.5px solid var(--green-light) !important;
+            color: var(--text-muted) !important;
+        }
+
+        .nav-signout:hover {
+            border-color: #e63946 !important;
+            color: #e63946 !important;
+            background: #fff0f1 !important;
+        }
+
+        /* ===========================
+           PAGE HEADER
+        =========================== */
+        .page-header {
+            background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 60%, var(--green-main) 100%);
+            padding: 64px 24px 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 60% at 80% 50%, rgba(255,255,255,0.05) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 15% 80%, rgba(244,165,34,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .page-header-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cellipse cx='30' cy='30' rx='8' ry='10'/%3E%3Cellipse cx='17' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='43' cy='20' rx='4' ry='5'/%3E%3Cellipse cx='14' cy='36' rx='4' ry='5'/%3E%3Cellipse cx='46' cy='36' rx='4' ry='5'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            animation: fadeSlideDown 0.5s ease both;
+        }
+
+        .page-header-badge i { color: var(--gold); }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 14px;
+            letter-spacing: -0.02em;
+            animation: fadeSlideUp 0.6s 0.1s ease both;
+        }
+
+        .page-header h1 em {
+            font-style: normal;
+            color: var(--gold);
+        }
+
+        .page-header p {
+            color: rgba(255,255,255,0.72);
+            font-size: 1rem;
+            max-width: 480px;
+            margin: 0 auto 28px;
+            animation: fadeSlideUp 0.6s 0.2s ease both;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            animation: fadeSlideUp 0.6s 0.3s ease both;
+        }
+
+        .breadcrumb a {
+            color: rgba(255,255,255,0.7);
+            transition: var(--transition);
+        }
+
+        .breadcrumb a:hover { color: var(--gold); }
+
+        .breadcrumb i { font-size: 0.6rem; }
+
+        /* ===========================
+           SEARCH / FILTER BAR
+        =========================== */
+        .filter-bar {
+            background: var(--white);
+            border-bottom: 1px solid var(--green-pale);
+            padding: 16px 24px;
+        }
+
+        .filter-bar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            max-width: 360px;
+        }
+
+        .search-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1.5px solid var(--green-light);
+            border-radius: var(--radius-pill);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--text-body);
+            background: var(--cream);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--green-main);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(82,183,136,0.12);
+        }
+
+        .filter-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .filter-count strong {
+            color: var(--green-deep);
+            font-weight: 700;
+        }
+
+        /* ===========================
+           MAIN CONTENT
+        =========================== */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 56px 24px 80px;
+        }
+
+        /* Section Label */
+        .section-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--green-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--green-main);
+            border-radius: 2px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 3vw, 2.1rem);
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 48px;
+        }
+
+        /* ===========================
+           CATEGORY GRID
+        =========================== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        /* Category Card */
+        .category-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--green-light);
+        }
+
+        /* Image wrapper */
+        .card-image {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .category-card:hover .card-image img {
+            transform: scale(1.08);
+        }
+
+        /* Gradient overlay on image */
+        .card-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(30,42,35,0.55) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        /* Emoji badge on image */
+        .card-emoji {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            z-index: 2;
+            font-size: 2.2rem;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover .card-emoji {
+            transform: scale(1.18) rotate(-5deg);
+        }
+
+        /* Top-right badge */
+        .card-top-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 2;
+            background: var(--gold);
+            color: var(--charcoal);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(244,165,34,0.4);
+        }
+
+        .card-top-badge.new {
+            background: var(--green-deep);
+            color: var(--white);
+        }
+
+        /* Card body */
+        .card-body {
+            padding: 22px 22px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--green-main);
+            margin-bottom: 8px;
+        }
+
+        .card-body h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.18rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .card-body p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        /* Card footer */
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-meta i { color: var(--green-main); }
+
+        .shop-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--green-deep);
+            color: var(--white);
+            padding: 9px 20px;
+            border-radius: var(--radius-pill);
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(45,106,79,0.22);
+            white-space: nowrap;
+        }
+
+        .shop-btn:hover {
+            background: var(--green-mid);
+            transform: translateX(3px);
+            box-shadow: 0 6px 16px rgba(45,106,79,0.28);
+        }
+
+        .shop-btn i {
+            font-size: 0.75rem;
+            transition: transform 0.25s ease;
+        }
+
+        .shop-btn:hover i { transform: translateX(3px); }
+
+        /* ===========================
+           FEATURED WIDE CARD
+        =========================== */
+        .wide-card {
+            grid-column: span 2;
+            flex-direction: row;
+        }
+
+        .wide-card .card-image {
+            width: 45%;
+            min-width: 45%;
+            height: auto;
+        }
+
+        .wide-card .card-body {
+            padding: 32px 28px;
+        }
+
+        .wide-card .card-body h2 {
+            font-size: 1.45rem;
+        }
+
+        /* ===========================
+           PROMO STRIP
+        =========================== */
+        .promo-strip {
+            background: linear-gradient(120deg, var(--gold-pale), #fff8e5);
+            border: 1.5px solid rgba(244,165,34,0.2);
+            border-radius: var(--radius-lg);
+            padding: 36px 44px;
+            margin-top: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-strip::before {
+            content: '🐾';
+            position: absolute;
+            font-size: 9rem;
+            opacity: 0.06;
+            right: -10px;
+            top: -20px;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .promo-strip p {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            margin-bottom: 6px;
+        }
+
+        .promo-strip h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            line-height: 1.2;
+        }
+
+        .promo-strip h3 em {
+            font-style: normal;
+            color: var(--gold-dark);
+        }
+
+        .promo-btn {
+            background: var(--gold);
+            color: var(--charcoal);
+            padding: 13px 30px;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: 0 6px 18px rgba(244,165,34,0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .promo-btn:hover {
+            background: var(--gold-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(244,165,34,0.4);
+        }
+
+        /* ===========================
+           SCROLL TO TOP
+        =========================== */
+        #scrollToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            background: var(--green-deep);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(45,106,79,0.4);
+            transition: var(--transition);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #scrollToTopBtn.visible { display: flex; }
+
+        #scrollToTopBtn:hover {
+            background: var(--green-mid);
+            transform: translateY(-3px);
+        }
+
+        /* ===========================
+           ANIMATIONS
+        =========================== */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===========================
+           RESPONSIVE
+        =========================== */
+        @media (max-width: 1024px) {
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+            .wide-card { grid-column: span 2; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-inner { height: 60px; padding: 0 16px; }
+            .navbar-brand { font-size: 1.5rem; }
+            .nav-links { gap: 4px; }
+            .nav-links a { padding: 6px 10px; font-size: 0.82rem; }
+            .nav-links li.hide-sm { display: none; }
+            .category-grid { grid-template-columns: 1fr; }
+            .wide-card { flex-direction: column; grid-column: span 1; }
+            .wide-card .card-image { width: 100%; height: 220px; }
+            .promo-strip { flex-direction: column; text-align: center; padding: 28px 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .filter-bar-inner { flex-direction: column; align-items: stretch; }
+            .search-wrap { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        🐾 Free island-wide delivery on orders over <span>Rs.5,000</span> &nbsp;|&nbsp; Use code <span>PETPEW10</span> for 10% off
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="homepage.html" class="navbar-brand">
+                <div class="logo-icon">🐾</div>
+                Pet<span class="brand-dot">Pew</span>
+            </a>
+            <ul class="nav-links">
+                <li class="hide-sm"><a href="homepage.html"><i class="fas fa-home"></i> Home</a></li>
+                <li class="hide-sm"><a href="account.php"><i class="fas fa-user"></i> Account</a></li>
+                <li>
+                    <a href="cart.html" class="nav-cart">
+                        <i class="fas fa-shopping-bag"></i> Cart
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html" class="nav-signout">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-pattern"></div>
+        <div class="page-header-content">
+            <div class="page-header-badge">
+                <i class="fas fa-th-large"></i>
+                Browse All Categories
+            </div>
+            <h1>Shop for Your <em>Beloved Pets</em></h1>
+            <p>From dogs to exotic creatures — find everything they need in one place.</p>
+            <div class="breadcrumb">
+                <a href="homepage.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Shop by Category</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-bar-inner">
+            <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search categories…" aria-label="Search categories">
+            </div>
+            <p class="filter-count">Showing <strong>6</strong> categories</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="section-label">All Departments</div>
+        <h2 class="section-title">Categories of The Pet Hub</h2>
+
+        <div class="category-grid" id="categoryGrid">
+
+            <!-- Dogs — Wide Feature Card -->
+            <div class="category-card wide-card reveal" data-name="dog products">
+                <div class="card-image">
+                    <img src="photo/dog.jpg" alt="Dogs" onerror="this.src='https://placehold.co/600x400/d8f3dc/2d6a4f?text=Dog+Products'">
+                    <span class="card-emoji">🐶</span>
+                    <span class="card-top-badge">🔥 Most Popular</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag">Dogs · Food · Accessories · Grooming</div>
+                    <h2>Dog Products</h2>
+                    <p>Give your dog the best nutrition, toys, grooming essentials, and cozy accessories for a happy, healthy, and wagging life. From premium kibble to orthopedic beds — we've got it all.</p>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-box"></i> 120+ Products
+                        </div>
+                        <a href="dog.html" class="shop-btn">
+                            Shop Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cats -->
+            <div class="category-card reveal" data-name="cat products">
+                <div class="card-image">
+                    <img src="photo/cat.jpg" alt="Cats" onerror="this.src='https://placehold.co/400x300/d8f3dc/2d6a4f?text=Cat+Products'">
+                    <span class="card-emoji">🐱</span>
+                    <span class="card-top-badge">⭐ Best Seller</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag">Cats · Treats · Toys · Litter</div>
+                    <h2>Cat Products</h2>
+                    <p>Pamper your cat with the finest treats, scratchers, and toys they'll absolutely adore.</p>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-box"></i> 95+ Products
+                        </div>
+                        <a href="cat.html" class="shop-btn">
+                            Shop Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Birds -->
+            <div class="category-card reveal" data-name="bird products">
+                <div class="card-image">
+                    <img src="photo/Birds.jpg.webp" alt="Birds" onerror="this.src='https://placehold.co/400x300/d8f3dc/2d6a4f?text=Bird+Products'">
+                    <span class="card-emoji">🦜</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag">Birds · Cages · Feed · Perches</div>
+                    <h2>Bird Products</h2>
+                    <p>Create a paradise for your birds with premium seeds, cages, and enrichment products.</p>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-box"></i> 60+ Products
+                        </div>
+                        <a href="birds.html" class="shop-btn">
+                            Shop Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aquarium -->
+            <div class="category-card reveal" data-name="aquarium products fish">
+                <div class="card-image">
+                    <img src="photo/Aquarium.jpg" alt="Aquarium" onerror="this.src='https://placehold.co/400x300/d8f3dc/2d6a4f?text=Aquarium'">
+                    <span class="card-emoji">🐟</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag">Fish · Tanks · Filters · Decor</div>
+                    <h2>Aquarium Products</h2>
+                    <p>Transform your aquarium into a breathtaking underwater world with our full range of fish care essentials.</p>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-box"></i> 80+ Products
+                        </div>
+                        <a href="Aquarium.html" class="shop-btn">
+                            Shop Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Small Pets -->
+            <div class="category-card reveal" data-name="small pet products hamster rabbit guinea pig">
+                <div class="card-image">
+                    <img src="photo/smallpets.jpg" alt="Small Pets" onerror="this.src='https://placehold.co/400x300/d8f3dc/2d6a4f?text=Small+Pets'">
+                    <span class="card-emoji">🐹</span>
+                    <span class="card-top-badge new">New In</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag">Hamsters · Rabbits · Guinea Pigs</div>
+                    <h2>Small Pet Products</h2>
+                    <p>Small pets, big love! Find everything your tiny friend needs — from bedding to balanced nutrition.</p>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-box"></i> 45+ Products
+                        </div>
+                        <a href="SmallPets.html" class="shop-btn">
+                            Shop Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exotic Pets -->
+            <div class="category-card reveal" data-name="exotic pet products reptile gecko lizard">
+                <div class="card-image">
+                    <img src="photo/Exotic Pets.jpg" alt="Exotic Pets" onerror="this.src='https://placehold.co/400x300/d8f3dc/2d6a4f?text=Exotic+Pets'">
+                    <span class="card-emoji">🦎</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag">Reptiles · Amphibians · Specialty</div>
+                    <h2>Exotic Pet Products</h2>
+                    <p>Discover the extraordinary — premium care products for reptiles, amphibians, and other unique companions.</p>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            <i class="fas fa-box"></i> 35+ Products
+                        </div>
+                        <a href="ExoticPets.html" class="shop-btn">
+                            Shop Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Promo Strip -->
+        <div class="promo-strip reveal">
+            <div>
+                <p>🎉 Limited Time Offer</p>
+                <h3>Get <em>20% Off</em> Your First Order<br>Use code <em>PETPEW10</em> at checkout</h3>
+            </div>
+            <a href="homepage.html" class="promo-btn">
+                Claim Offer <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </main>
+
+    <!-- Scroll to Top -->
+    <button id="scrollToTopBtn" title="Back to top" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // ── Scroll to Top ──────────────────────────────────────
+        const scrollBtn = document.getElementById('scrollToTopBtn');
+        window.addEventListener('scroll', () => {
+            scrollBtn.classList.toggle('visible', window.scrollY > 300);
+        });
+        scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // ── Scroll Reveal ──────────────────────────────────────
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 90);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ── Live Search ────────────────────────────────────────
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.category-card');
+        const countEl = document.querySelector('.filter-count strong');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            let visible = 0;
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name') || '';
+                const title = card.querySelector('h2')?.textContent.toLowerCase() || '';
+                const match = !query || name.includes(query) || title.includes(query);
+
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+
+            countEl.textContent = visible;
+        });
+    </script>
+</body>
+</html>
